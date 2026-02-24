@@ -22,10 +22,11 @@ public class InventoryClick implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         if (!pageManager.containsPlayer(player)) return;
+        if (event.getClickedInventory() == null) return;
 
         Page page = pageManager.getPlayer(player);
 
-        if (event.getView().getTopInventory() != page.getInventory()) return;
+        if (!event.getView().getTopInventory().equals(page.getInventory())) return;
 
         event.setCancelled(true);
 
