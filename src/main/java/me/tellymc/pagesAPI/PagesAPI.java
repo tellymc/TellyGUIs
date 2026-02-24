@@ -1,6 +1,7 @@
 package me.tellymc.pagesAPI;
 
 import me.tellymc.pagesAPI.listeners.InventoryClick;
+import me.tellymc.pagesAPI.listeners.LeaveListener;
 import me.tellymc.pagesAPI.managers.PageManager;
 import me.tellymc.pagesAPI.objects.Page;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +24,7 @@ public final class PagesAPI {
 
     private void registerListeners() {
         plugin.getServer().getPluginManager().registerEvents(new InventoryClick(pageManager), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new LeaveListener(pageManager), plugin);
     }
 
     public static PagesAPI init(JavaPlugin plugin) {

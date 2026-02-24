@@ -54,16 +54,19 @@ public class Page {
     }
 
     public void open(Player player) {
+        if (!pageManager.containsPlayer(player)) return;
         player.openInventory(inventory);
         pageManager.putPlayer(player, this);
     }
 
     public void openLastPage(Player player) {
+        if (lastPage == null) return;
         player.openInventory(lastPage.getInventory());
         pageManager.putPlayer(player, lastPage);
     }
 
     public void openNextPage(Player player) {
+        if (nextPage == null) return;
         player.openInventory(nextPage.getInventory());
         pageManager.putPlayer(player, nextPage);
     }
