@@ -11,7 +11,7 @@
 </repository>
 ```
 
-2) Add the Dependency within the Pom.xml
+1) Add the Dependency within the Pom.xml
 ```xml
 <dependency>
     <groupId>com.github.tellymc</groupId>
@@ -19,7 +19,7 @@
     <version>1.2.0</version>
 </dependency>
 ```
-3) Reload Maven
+1) Reload Maven
 
 ## How to Use
 1) Add the PagesAPI in the main class
@@ -43,7 +43,7 @@ public final class PagesTest extends JavaPlugin {
 }
 ```
 
-2) Creating a page
+1) Creating a page
 ```java
 public class TestCMD implements CommandExecutor {
     
@@ -72,7 +72,7 @@ public class TestCMD implements CommandExecutor {
     }
 }
 ```
-3) Adding an item to the GUI
+1) Adding an item to the GUI
 ```java
 public class TestCMD implements CommandExecutor {
     
