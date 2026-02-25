@@ -18,9 +18,19 @@ public class Page {
     private Page lastPage;
     private Page nextPage;
 
-    public Page(PageManager pageManager, int size, String name) {
+    public Page(PageManager pageManager, int rows, String name) {
         this.pageManager = pageManager;
-        inventory = Bukkit.createInventory(null, size, name);
+        inventory = Bukkit.createInventory(null, rows * 9, name);
+    }
+
+    public PageItem setSlot(int slot, ItemStack itemStack) {
+
+        PageItem pageItem = new PageItem(itemStack);
+
+        inventory.setItem(slot, pageItem.getItemStack());
+        items.put(slot, pageItem);
+
+        return pageItem;
     }
 
     public PageItem setSlot(int slot, ItemStack itemStack, String name) {
@@ -31,6 +41,149 @@ public class Page {
         items.put(slot, pageItem);
 
         return pageItem;
+    }
+
+    public PageItem setSlot(int slot, ItemStack itemStack, String name, String... lore) {
+
+        PageItem pageItem = new PageItem(itemStack, name);
+        pageItem.setLore(lore);
+
+        inventory.setItem(slot, pageItem.getItemStack());
+        items.put(slot, pageItem);
+
+        return pageItem;
+    }
+
+    public void column(int column, ItemStack itemStack) {
+
+        if (column < 0 || column > 8) return;
+
+        int rows = inventory.getSize() / 9;
+
+        for (int i = 0; i < rows; i++) {
+
+            setSlot((i * 9) + column, itemStack);
+        }
+    }
+
+    public void column(int column, ItemStack itemStack, String name) {
+
+        if (column < 0 || column > 8) return;
+
+        int rows = inventory.getSize() / 9;
+
+        for (int i = 0; i < rows; i++) {
+
+            setSlot((i * 9) + column, itemStack, name);
+        }
+    }
+
+    public void column(int column, ItemStack itemStack, String name, String... lore) {
+
+        if (column < 0 || column > 8) return;
+
+        int rows = inventory.getSize() / 9;
+
+        for (int i = 0; i < rows; i++) {
+
+            setSlot((i * 9) + column, itemStack, name, lore);
+        }
+    }
+
+    public void row(int row, ItemStack itemStack) {
+
+        int rows = inventory.getSize() / 9;
+
+        if (row < 0 || row >= rows) return;
+
+        for (int i = 0; i < 9; i++) {
+
+            setSlot((row * 9) + i, itemStack);
+        }
+    }
+
+    public void row(int row, ItemStack itemStack, String name) {
+
+        int rows = inventory.getSize() / 9;
+
+        if (row < 0 || row >= rows) return;
+
+        for (int i = 0; i < 9; i++) {
+
+            setSlot((row * 9) + i, itemStack, name);
+        }
+    }
+
+    public void row(int row, ItemStack itemStack, String name, String... lore) {
+
+        int rows = inventory.getSize() / 9;
+
+        if (row < 0 || row >= rows) return;
+
+        for (int i = 0; i < 9; i++) {
+
+            setSlot((row * 9) + i, itemStack, name, lore);
+        }
+    }
+
+    public void outline(ItemStack itemStack) {
+
+        int rows = inventory.getSize() / 9;
+
+        row(0, itemStack);
+        if (rows > 0) row(rows, itemStack);
+
+        column(0, itemStack);
+        column(8, itemStack);
+    }
+
+    public void outline(ItemStack itemStack, String name) {
+
+        int rows = inventory.getSize() / 9;
+
+        row(0, itemStack, name);
+        if (rows > 0) row(rows, itemStack, name);
+
+        column(0, itemStack, name);
+        column(8, itemStack, name);
+    }
+
+    public void outline(ItemStack itemStack, String name, String... lore) {
+
+        int rows = inventory.getSize() / 9;
+
+        row(0, itemStack, name, lore);
+        if (rows > 0) row(rows, itemStack, name, lore);
+
+        column(0, itemStack, name, lore);
+        column(8, itemStack, name, lore);
+    }
+
+    public void fill(ItemStack itemStack) {
+
+        int items = inventory.getSize();
+
+        for (int i = 0; i < items; i++) {
+            setSlot(i, itemStack);
+        }
+    }
+
+    public void fill(ItemStack itemStack, String name) {
+
+        int items = inventory.getSize();
+
+        for (int i = 0; i < items; i++) {
+            setSlot(i, itemStack, name);
+        }
+    }
+
+    public void fill(ItemStack itemStack, String name, String... lore) {
+
+        int items = inventory.getSize();
+
+        for (int i = 0; i < items; i++) {
+            setSlot(i, itemStack, name, lore);
+        }
     }
 
     public void handleClick(InventoryClickEvent event) {

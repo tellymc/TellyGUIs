@@ -63,7 +63,7 @@ public class TestCMD implements CommandExecutor {
         PagesAPI pagesAPI = pagesTest.getPagesAPI();
     
         // Creates the actual page with the parameters of size and title of the inventory
-        Page page = pagesAPI.createPage(9, "Test Page"); 
+        Page page = pagesAPI.createPage(6, "Test Page"); 
 
         // Open it afterward
         page.open(player);
@@ -92,7 +92,7 @@ public class TestCMD implements CommandExecutor {
         PagesAPI pagesAPI = pagesTest.getPagesAPI();
     
         // Creates the actual page with the parameters of size and title of the inventory
-        Page page = pagesAPI.createPage(9, "Test Page");
+        Page page = pagesAPI.createPage(6, "Test Page");
 
         // Creates an item and sets it within the GUI
         PageItem item = page1.setSlot(4, new ItemStack(Material.BARRIER), "Exit GUI");
@@ -104,7 +104,9 @@ public class TestCMD implements CommandExecutor {
     }
 }
 ```
-4) Add a click action to an item
+
+## Examples
+1) Adding a Click-Action to an Item
 ```java
 public class TestCMD implements CommandExecutor {
     
@@ -124,7 +126,7 @@ public class TestCMD implements CommandExecutor {
         PagesAPI pagesAPI = pagesTest.getPagesAPI();
     
         // Creates the actual page with the parameters of size and title of the inventory
-        Page page = pagesAPI.createPage(9, "Test Page");
+        Page page = pagesAPI.createPage(6, "Test Page");
 
         // Creates an item and sets it within the GUI
         PageItem item = page1.setSlot(4, new ItemStack(Material.BARRIER), "Exit GUI");
@@ -142,7 +144,49 @@ public class TestCMD implements CommandExecutor {
 }
 ```
 
-## Example of a Multi-Page GUI
+2) Using .column(), .row(), .outline(), and .fill()
+```java
+public class TestCMD implements CommandExecutor {
+    
+    private final PagesTest pagesTest;
+    
+    public TestCMD(PagesTest pagesTest) {
+        this.pagesTest = pagesTest;
+    }
+    
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+        
+        if (!(sender instanceof Player)) return false;
+        Player player = (Player) sender;
+
+        // Gets the PagesAPI from the Main Class
+        PagesAPI pagesAPI = pagesTest.getPagesAPI();
+    
+        // Creates the actual page with the parameters of size and title of the inventory
+        Page page = pagesAPI.createPage(6, "Test Page");
+        
+        // Fill the page first
+        page.fill(new ItemStack(Material.STAINED_GLASS_PANE));
+        
+        // Fill the outer border of the GUI
+        page.outline(new ItemStack(Material.DIAMOND_BLOCK));
+        
+        // Add a column in the middle
+        page.column(4, new ItemStack(Material.WOOL));
+        
+        // Add a column in row 3 (base 0 indexing)
+        page.row(2, new ItemStack(Material.WOOL));
+
+        // Open it afterward
+        page.open(player);
+
+        return true;
+    }
+}
+```
+
+3) Multi-Page GUI
 ```java
 public class TestCMD implements CommandExecutor {
     
@@ -162,8 +206,8 @@ public class TestCMD implements CommandExecutor {
         PagesAPI pagesAPI = pagesTest.getPagesAPI();
         
         // Creates the two pages that it will go between
-        Page page1 = pagesAPI.createPage(9, "First Page");
-        Page page2 = pagesAPI.createPage(9, "Second Page");
+        Page page1 = pagesAPI.createPage(6, "First Page");
+        Page page2 = pagesAPI.createPage(6, "Second Page");
         
         // Creates an item for the first GUI for going to the next page (page2)
         PageItem item1 = page1.setSlot(8, new ItemStack(Material.ARROW), "Next Page");
