@@ -64,6 +64,7 @@ public class PageItem {
     }
 
     public void handleClick(InventoryClickEvent event) {
+        if (clickAction == null) return;
         clickAction.accept(event);
     }
 
