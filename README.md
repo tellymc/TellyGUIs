@@ -1,6 +1,7 @@
 # TellyGUIs (PagesAPI)
 
 ## How to Install
+[![](https://jitpack.io/v/tellymc/TellyGUIs.svg)](https://jitpack.io/#tellymc/TellyGUIs)
 
 1) Add the Repository within the Pom.xml
 ```xml
