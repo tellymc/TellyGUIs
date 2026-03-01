@@ -16,7 +16,7 @@
 <dependency>
     <groupId>com.github.tellymc</groupId>
     <artifactId>TellyGUIs</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 1) Reload Maven
