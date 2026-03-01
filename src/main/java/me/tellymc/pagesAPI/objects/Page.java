@@ -56,7 +56,7 @@ public class Page {
 
     public void column(int column, ItemStack itemStack) {
 
-        if (column < 0 || column > 8) return;
+        if (column < 0 || column > 9) return;
         column--;
 
         int rows = inventory.getSize() / 9;
@@ -69,7 +69,7 @@ public class Page {
 
     public void column(int column, ItemStack itemStack, String name) {
 
-        if (column < 0 || column > 8) return;
+        if (column < 0 || column > 9) return;
         column--;
 
         int rows = inventory.getSize() / 9;
@@ -82,7 +82,7 @@ public class Page {
 
     public void column(int column, ItemStack itemStack, String name, String... lore) {
 
-        if (column < 0 || column > 8) return;
+        if (column < 0 || column > 9) return;
         column--;
 
         int rows = inventory.getSize() / 9;
