@@ -217,6 +217,14 @@ public class Page {
         pageManager.putPlayer(player, this);
     }
 
+    public PageItem getItem(int slot) {
+        return items.get(slot);
+    }
+
+    public HashMap<Integer, PageItem> getItems() {
+        return this.items;
+    }
+
     public void openLastPage(Player player) {
         if (lastPage == null) return;
         player.openInventory(lastPage.getInventory());
