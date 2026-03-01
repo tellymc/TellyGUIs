@@ -207,7 +207,6 @@ public class Page {
     }
 
     public void open(Player player) {
-        if (!pageManager.containsPlayer(player)) return;
         player.openInventory(inventory);
         pageManager.putPlayer(player, this);
     }
