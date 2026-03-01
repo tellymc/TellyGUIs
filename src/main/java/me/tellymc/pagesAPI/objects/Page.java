@@ -57,6 +57,7 @@ public class Page {
     public void column(int column, ItemStack itemStack) {
 
         if (column < 0 || column > 8) return;
+        column--;
 
         int rows = inventory.getSize() / 9;
 
@@ -69,6 +70,7 @@ public class Page {
     public void column(int column, ItemStack itemStack, String name) {
 
         if (column < 0 || column > 8) return;
+        column--;
 
         int rows = inventory.getSize() / 9;
 
@@ -81,6 +83,7 @@ public class Page {
     public void column(int column, ItemStack itemStack, String name, String... lore) {
 
         if (column < 0 || column > 8) return;
+        column--;
 
         int rows = inventory.getSize() / 9;
 
@@ -93,6 +96,7 @@ public class Page {
     public void row(int row, ItemStack itemStack) {
 
         int rows = inventory.getSize() / 9;
+        row--;
 
         if (row < 0 || row >= rows) return;
 
@@ -105,6 +109,7 @@ public class Page {
     public void row(int row, ItemStack itemStack, String name) {
 
         int rows = inventory.getSize() / 9;
+        row--;
 
         if (row < 0 || row >= rows) return;
 
@@ -117,6 +122,7 @@ public class Page {
     public void row(int row, ItemStack itemStack, String name, String... lore) {
 
         int rows = inventory.getSize() / 9;
+        row--;
 
         if (row < 0 || row >= rows) return;
 
@@ -130,33 +136,33 @@ public class Page {
 
         int rows = inventory.getSize() / 9;
 
-        row(0, itemStack);
+        row(1, itemStack);
         if (rows > 0) row(rows, itemStack);
 
-        column(0, itemStack);
-        column(8, itemStack);
+        column(1, itemStack);
+        column(9, itemStack);
     }
 
     public void outline(ItemStack itemStack, String name) {
 
         int rows = inventory.getSize() / 9;
 
-        row(0, itemStack, name);
+        row(1, itemStack, name);
         if (rows > 0) row(rows, itemStack, name);
 
-        column(0, itemStack, name);
-        column(8, itemStack, name);
+        column(1, itemStack, name);
+        column(9, itemStack, name);
     }
 
     public void outline(ItemStack itemStack, String name, String... lore) {
 
         int rows = inventory.getSize() / 9;
 
-        row(0, itemStack, name, lore);
+        row(1, itemStack, name, lore);
         if (rows > 0) row(rows, itemStack, name, lore);
 
-        column(0, itemStack, name, lore);
-        column(8, itemStack, name, lore);
+        column(1, itemStack, name, lore);
+        column(9, itemStack, name, lore);
     }
 
     public void fill(ItemStack itemStack) {
