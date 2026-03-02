@@ -1,7 +1,6 @@
 # TellyGUIs (PagesAPI)
 
 ## How to Install
-[![](https://jitpack.io/v/tellymc/TellyGUIs.svg)](https://jitpack.io/#tellymc/TellyGUIs)
 
 1) Add the Repository within the Pom.xml
 ```xml
@@ -16,9 +15,10 @@
 <dependency>
     <groupId>com.github.tellymc</groupId>
     <artifactId>TellyGUIs</artifactId>
-    <version>1.4.1</version>
+    <version>{VERSION (You can find this on JitPack right under this)}</version>
 </dependency>
 ```
+[![](https://jitpack.io/v/tellymc/TellyGUIs.svg)](https://jitpack.io/#tellymc/TellyGUIs)
 3) Reload Maven
 
 ## How to Use
