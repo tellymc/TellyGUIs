@@ -1,16 +1,20 @@
 package me.tellymc.pagesAPI.objects;
 
+import me.tellymc.pagesAPI.PagesAPI;
 import me.tellymc.pagesAPI.managers.PageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class Page {
 
+    private final PagesAPI plugin;
     private final PageManager pageManager;
 
     private final HashMap<Integer, PageItem> items = new HashMap<>();
@@ -18,8 +22,9 @@ public class Page {
     private Page lastPage;
     private Page nextPage;
 
-    public Page(PageManager pageManager, int rows, String name) {
-        this.pageManager = pageManager;
+    public Page(PagesAPI plugin, int rows, String name) {
+        this.plugin = plugin;
+        this.pageManager = plugin.getPageManager();
         inventory = Bukkit.createInventory(null, rows * 9, name);
     }
 
@@ -215,6 +220,10 @@ public class Page {
     public void open(Player player) {
         player.openInventory(inventory);
         pageManager.putPlayer(player, this);
+    }
+
+    public void handleChatInput(Player player, Consumer<AsyncPlayerChatEvent> event) {
+        plugin.getChatInputManager().trackPlayerInput(player, event);
     }
 
     public PageItem getItem(int slot) {
