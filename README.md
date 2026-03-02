@@ -1,4 +1,5 @@
 # TellyGUIs (PagesAPI)
+[![](https://jitpack.io/v/tellymc/TellyGUIs.svg)](https://jitpack.io/#tellymc/TellyGUIs)
 
 ## How to Install
 
@@ -15,10 +16,10 @@
 <dependency>
     <groupId>com.github.tellymc</groupId>
     <artifactId>TellyGUIs</artifactId>
-    <version>{VERSION (You can find this on JitPack right under this)}</version>
+    <version>Version is under title in ReadME</version>
 </dependency>
 ```
-[![](https://jitpack.io/v/tellymc/TellyGUIs.svg)](https://jitpack.io/#tellymc/TellyGUIs)
+
 3) Reload Maven
 
 ## How to Use
