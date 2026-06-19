@@ -5,19 +5,30 @@
     <title>PagesAPI GUI Generator</title>
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* Liquid Glass / Mesh Gradient Background */
+            background-color: #ffffff;
+            background-image: 
+                radial-gradient(at 40% 20%, rgba(28, 169, 255, 0.4) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(133, 36, 255, 0.3) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(255, 113, 178, 0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, rgba(93, 230, 255, 0.4) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(153, 102, 255, 0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, rgba(59, 130, 246, 0.3) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, rgba(255, 59, 48, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
             margin: 0; 
             padding: 40px 20px; 
             min-height: 100vh; 
             box-sizing: border-box;
             display: flex;
             justify-content: center;
+            color: #1d1d1f;
         }
         
         .main-wrapper {
             display: flex;
-            gap: 20px;
+            gap: 30px;
             max-width: 1200px;
             width: 100%;
             flex-wrap: wrap;
@@ -25,72 +36,103 @@
             justify-content: center;
         }
 
+        /* The Main 50% Translucent Glass Panels */
+        .container, .top-settings, .import-section { 
+            background: rgba(255, 255, 255, 0.5); 
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.9);
+            border-left: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); 
+            border-radius: 24px; 
+        }
+
         .container { 
             flex: 1 1 500px;
             max-width: 600px;
-            background: rgba(255, 255, 255, 0.5); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #222; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 35px; 
         }
 
+        .top-settings {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .import-section {
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .import-section.green-theme {
+            background: rgba(230, 255, 235, 0.5);
+            border-color: rgba(46, 204, 113, 0.4);
+            box-shadow: 0 10px 40px rgba(46, 204, 113, 0.15);
+        }
+        .import-section label { margin-top: 0; }
+
         .preview-container {
-            flex: 1 1 300px;
-            padding: 30px 0; 
+            flex: 1 1 350px;
+            padding: 0; 
             overflow-x: auto; 
             box-sizing: border-box;
             position: sticky;
-            top: 20px;
+            top: 40px;
         }
 
+        /* Glassy In-Game Tooltip */
         .mc-tooltip {
-            background-color: rgba(17, 1, 17, 0.95);
-            border: 2px solid #2a0446;
-            border-radius: 12px;
-            padding: 15px;
+            background-color: rgba(20, 20, 20, 0.85);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 18px;
             font-family: 'Courier New', Courier, monospace; 
             font-size: 14px;
             line-height: 1.5;
             color: #AAAAAA;
-            box-shadow: inset 0 0 0 2px rgba(17, 1, 17, 0.5), 0 10px 25px rgba(0,0,0,0.3);
-            text-shadow: 2px 2px 0px #000;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+            text-shadow: 1px 1px 0px #000;
             white-space: pre; 
             width: max-content; 
             min-width: 250px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .preview-title {
-            color: #fff;
+            color: #1d1d1f;
             margin-top: 0;
             margin-bottom: 15px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            font-weight: 700;
             position: sticky; 
             left: 0;
         }
 
-        h2 { color: #111; margin-top: 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 10px; }
-        h3 { color: #111; margin-bottom: 10px; margin-top: 25px; }
-        label { display: block; margin: 15px 0 5px; font-weight: bold; color: #222; }
+        h2 { color: #1d1d1f; margin-top: 0; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 15px; font-weight: 700; letter-spacing: -0.5px;}
+        h3 { color: #1d1d1f; margin-bottom: 12px; margin-top: 30px; font-weight: 600; letter-spacing: -0.3px;}
+        label { display: block; margin: 15px 0 6px; font-weight: 600; color: #333; font-size: 14px;}
+        .note { font-size: 13px; color: #666; margin-top: -4px; margin-bottom: 8px; }
         
+        /* Glassy Inputs */
         input[type="text"], input[type="number"], select, textarea { 
             width: 100%; 
-            padding: 10px; 
+            padding: 12px; 
             box-sizing: border-box; 
-            background: #fdfdfd; 
-            color: #333; 
-            border: 1px solid #ccc; 
-            border-radius: 6px; 
+            background: rgba(255, 255, 255, 0.5); 
+            color: #1d1d1f; 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 12px; 
             font-family: inherit;
-            transition: border 0.3s, box-shadow 0.3s;
+            font-size: 14px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #0072ff;
-            box-shadow: 0 0 0 2px rgba(0, 114, 255, 0.3);
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 122, 255, 0.5);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15), inset 0 2px 5px rgba(0,0,0,0.02);
         }
         
         textarea { height: 120px; resize: vertical; } 
@@ -99,69 +141,81 @@
         .row > div { flex: 1; }
         .row > .small-col { flex: 0 0 80px; } 
 
-        .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+        /* Custom iOS-Style Checkboxes */
+        .checkbox-group { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
         .checkbox-container { display: flex; align-items: center; }
-        .checkbox-container input[type="checkbox"] { margin: 0 10px 0 0; width: auto; cursor: pointer; transform: scale(1.2); }
-        .checkbox-container label { margin: 0; font-weight: bold; cursor: pointer; color: #222; }
+        .checkbox-container input[type="checkbox"] { 
+            appearance: none; width: 22px; height: 22px; padding: 0;
+            background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.15);
+            border-radius: 6px; margin: 0 10px 0 0; cursor: pointer;
+            position: relative; transition: 0.2s; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .checkbox-container input[type="checkbox"]:checked {
+            background: #007aff; border-color: #007aff;
+        }
+        .checkbox-container input[type="checkbox"]:checked::after {
+            content: '✓'; color: white; position: absolute; font-weight: bold;
+            left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 14px;
+        }
+        .checkbox-container label { margin: 0; font-weight: 500; cursor: pointer; color: #333; }
         
         .output-container { position: relative; margin-top: 10px; }
+        
+        /* Dark Glass Outputs */
         .output { 
-            background: #1e1e1e; 
-            color: #d4d4d4; 
-            padding: 15px; 
-            border-radius: 6px; 
+            background: rgba(0, 0, 0, 0.75); 
+            color: #f1f1f1; 
+            padding: 20px; 
+            border-radius: 16px; 
             font-family: 'Courier New', Courier, monospace; 
             word-break: break-all; 
-            border: 1px solid #111; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
             min-height: 50px; 
             padding-bottom: 50px; 
             white-space: pre; 
             overflow-x: auto;
+            backdrop-filter: blur(20px);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
         }
+
+        /* Apple Blue Buttons */
         .btn {
-            background: #0072ff; 
-            color: #fff; 
-            border: none; 
+            background: rgba(255, 255, 255, 0.6); 
+            color: #007aff; 
+            border: 1px solid rgba(255, 255, 255, 0.8); 
             padding: 10px 20px; 
-            border-radius: 6px; 
+            border-radius: 12px; 
             cursor: pointer; 
-            font-weight: bold; 
-            transition: background 0.2s; 
+            font-weight: 600; 
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .btn:hover { background: #005bb5; }
-        .btn-red { background: #e74c3c; }
-        .btn-red:hover { background: #c0392b; }
+        .btn:hover { 
+            background: rgba(255, 255, 255, 0.8); 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+        .btn-red { color: #ff3b30; }
+        .btn-red:hover { background: rgba(255, 59, 48, 0.1); }
+        .import-section.green-theme .btn { color: #34c759; }
+        .import-section.green-theme .btn:hover { background: rgba(52, 199, 89, 0.2); }
 
         .copy-btn { 
             position: absolute; 
             bottom: 12px; 
             right: 12px; 
             padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
         }
-        .note { font-size: 0.85em; color: #444; margin-top: -5px; margin-bottom: 8px; }
-
-        .top-settings {
-            background: rgba(0,0,0,0.05);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(0,0,0,0.1);
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
         }
 
-        .import-section {
-            background: rgba(0,0,0,0.05);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border: 1px dashed rgba(0,0,0,0.2);
-        }
-        .import-section.green-theme {
-            background: rgba(46, 204, 113, 0.1);
-            border-color: rgba(46, 204, 113, 0.4);
-        }
-        .import-section label { margin-top: 0; }
-
-        /* GUI Grid Styling */
+        /* Glass GUI Grid */
         .chest-wrapper {
             display: flex;
             justify-content: center;
@@ -170,30 +224,39 @@
         .chest-grid {
             display: grid;
             grid-template-columns: repeat(9, 40px);
-            gap: 2px;
-            background: #c6c6c6;
-            padding: 8px;
-            border-radius: 4px;
-            border: 2px solid #555;
-            border-right-color: #111;
-            border-bottom-color: #111;
-            box-shadow: inset 2px 2px #fff, inset -2px -2px #8b8b8b;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.05);
         }
         .chest-slot {
             width: 40px; 
             height: 40px;
-            background: #8b8b8b;
-            box-shadow: inset 2px 2px #373737, inset -2px -2px #FFF;
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.5);
             cursor: pointer; 
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
+            border-radius: 8px;
+            transition: all 0.15s ease;
         }
-        .chest-slot:hover { background: #9b9b9b; }
+        .chest-slot:hover { 
+            background: rgba(255, 255, 255, 0.7); 
+            transform: scale(1.05);
+            z-index: 2;
+        }
+
+        /* The Bright Yellow Highlight */
         .chest-slot.selected {
-            outline: 2px solid #ffff00;
-            outline-offset: -2px;
+            outline: 3px solid #ffcc00;
+            outline-offset: 1px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
             z-index: 3;
         }
         
@@ -209,8 +272,8 @@
             z-index: 1;
             font-size: 14px;
             font-weight: bold;
-            color: #ddd;
-            text-shadow: 1px 1px 0 #333;
+            color: rgba(0,0,0,0.2);
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
             text-transform: uppercase;
             pointer-events: none;
         }
@@ -219,35 +282,40 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
             padding-bottom: 10px;
             margin-top: 25px;
             margin-bottom: 15px;
         }
         .editor-header h3 { margin: 0; border-bottom: none; padding-bottom: 0; }
         
-        /* Action Mode Selector */
+        /* iOS-Style Segmented Control for Action Modes */
         .mode-selector {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
         .mode-btn {
             flex: 1;
-            padding: 8px;
-            background: #eee;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
-            color: #444;
-            transition: 0.2s;
+            font-weight: 600;
+            color: #555;
+            transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .mode-btn:hover { background: #ddd; }
+        .mode-btn:hover { color: #1d1d1f; }
         .mode-btn.active {
-            background: #0072ff;
-            color: white;
-            border-color: #005bb5;
+            background: #fff;
+            color: #007aff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         
         .target-box {
