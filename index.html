@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PagesAPI GUI Generator</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); 
+            margin: 0; 
+            padding: 40px 20px; 
+            min-height: 100vh; 
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .main-wrapper {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            flex-wrap: wrap;
+            align-items: flex-start; 
+            justify-content: center;
+        }
+
+        .container { 
+            flex: 1 1 500px;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.5); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #222; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .preview-container {
+            flex: 1 1 300px;
+            padding: 30px 0; 
+            overflow-x: auto; 
+            box-sizing: border-box;
+            position: sticky;
+            top: 20px;
+        }
+
+        .mc-tooltip {
+            background-color: rgba(17, 1, 17, 0.95);
+            border: 2px solid #2a0446;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 14px;
+            line-height: 1.5;
+            color: #AAAAAA;
+            box-shadow: inset 0 0 0 2px rgba(17, 1, 17, 0.5), 0 10px 25px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 0px #000;
+            white-space: pre; 
+            width: max-content; 
+            min-width: 250px;
+        }
+
+        .preview-title {
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            position: sticky; 
+            left: 0;
+        }
+
+        h2 { color: #111; margin-top: 0; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 10px; }
+        h3 { color: #111; margin-bottom: 10px; margin-top: 25px; }
+        label { display: block; margin: 15px 0 5px; font-weight: bold; color: #222; }
+        
+        input[type="text"], input[type="number"], select, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            box-sizing: border-box; 
+            background: #fdfdfd; 
+            color: #333; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            font-family: inherit;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #0072ff;
+            box-shadow: 0 0 0 2px rgba(0, 114, 255, 0.3);
+        }
+        
+        textarea { height: 120px; resize: vertical; } 
+        
+        .row { display: flex; gap: 15px; align-items: flex-end; }
+        .row > div { flex: 1; }
+        .row > .small-col { flex: 0 0 80px; } 
+
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+        .checkbox-container { display: flex; align-items: center; }
+        .checkbox-container input[type="checkbox"] { margin: 0 10px 0 0; width: auto; cursor: pointer; transform: scale(1.2); }
+        .checkbox-container label { margin: 0; font-weight: bold; cursor: pointer; color: #222; }
+        
+        .output-container { position: relative; margin-top: 10px; }
+        .output { 
+            background: #1e1e1e; 
+            color: #d4d4d4; 
+            padding: 15px; 
+            border-radius: 6px; 
+            font-family: 'Courier New', Courier, monospace; 
+            word-break: break-all; 
+            border: 1px solid #111; 
+            min-height: 50px; 
+            padding-bottom: 50px; 
+            white-space: pre; 
+            overflow-x: auto;
+        }
+        .btn {
+            background: #0072ff; 
+            color: #fff; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: background 0.2s; 
+        }
+        .btn:hover { background: #005bb5; }
+        .btn-red { background: #e74c3c; }
+        .btn-red:hover { background: #c0392b; }
+
+        .copy-btn { 
+            position: absolute; 
+            bottom: 12px; 
+            right: 12px; 
+            padding: 8px 16px;
+        }
+        .note { font-size: 0.85em; color: #444; margin-top: -5px; margin-bottom: 8px; }
+
+        .top-settings {
+            background: rgba(0,0,0,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .import-section {
+            background: rgba(0,0,0,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px dashed rgba(0,0,0,0.2);
+        }
+        .import-section.green-theme {
+            background: rgba(46, 204, 113, 0.1);
+            border-color: rgba(46, 204, 113, 0.4);
+        }
+        .import-section label { margin-top: 0; }
+
+        /* GUI Grid Styling */
+        .chest-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .chest-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 40px);
+            gap: 2px;
+            background: #c6c6c6;
+            padding: 8px;
+            border-radius: 4px;
+            border: 2px solid #555;
+            border-right-color: #111;
+            border-bottom-color: #111;
+            box-shadow: inset 2px 2px #fff, inset -2px -2px #8b8b8b;
+        }
+        .chest-slot {
+            width: 40px; 
+            height: 40px;
+            background: #8b8b8b;
+            box-shadow: inset 2px 2px #373737, inset -2px -2px #FFF;
+            cursor: pointer; 
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chest-slot:hover { background: #9b9b9b; }
+        .chest-slot.selected {
+            outline: 2px solid #ffff00;
+            outline-offset: -2px;
+            z-index: 3;
+        }
+        
+        .chest-slot .item-icon {
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated; 
+            z-index: 2;
+            pointer-events: none;
+        }
+        .chest-slot .item-fallback {
+            position: absolute;
+            z-index: 1;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ddd;
+            text-shadow: 1px 1px 0 #333;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            padding-bottom: 10px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .editor-header h3 { margin: 0; border-bottom: none; padding-bottom: 0; }
+        
+        /* Action Mode Selector */
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 8px;
+            background: #eee;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #444;
+            transition: 0.2s;
+        }
+        .mode-btn:hover { background: #ddd; }
+        .mode-btn.active {
+            background: #0072ff;
+            color: white;
+            border-color: #005bb5;
+        }
+        
+        .target-box {
+            display: none; 
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <!-- GENERATOR SECTION -->
+    <div class="container">
+        <h2>PagesAPI Java Generator</h2>
+
+        <!-- IMPORT FULL CHEST SECTION -->
+        <div class="import-section green-theme">
+            <label for="importFullCmd">Import Full Chest Command</label>
+            <div class="note">Paste a full /give chest command here to load ALL slots! (Wipes current GUI)</div>
+            <div class="row">
+                <input type="text" id="importFullCmd" placeholder='e.g. /give @p chest 1 0 {BlockEntityTag:{Items:[...]}}'>
+                <button class="btn" onclick="importFullChest()" style="flex: 0 0 auto; background: #27ae60;">Import Chest</button>
+            </div>
+        </div>
+
+        <!-- TOP CONFIG -->
+        <div class="top-settings">
+            <div class="row">
+                <div>
+                    <label for="playerName">Player Name</label>
+                    <div class="note">Target for /give</div>
+                    <input type="text" id="playerName" value="@p">
+                </div>
+                <div>
+                    <label for="guiName">GUI Custom Name</label>
+                    <div class="note">Colors allowed (e.g. &8Menu)</div>
+                    <input type="text" id="guiName" value="&8My Custom Menu">
+                </div>
+                <div class="small-col">
+                    <label for="guiRows">Rows</label>
+                    <select id="guiRows" oninput="changeRows()">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6" selected>6</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="varName">Variable Name</label>
+                    <input type="text" id="varName" value="page">
+                </div>
+            </div>
+        </div>
+
+        <!-- CHEST GRID INTERFACE -->
+        <div class="chest-wrapper">
+            <div class="chest-grid" id="chestGrid">
+                <!-- Slots injected by JS -->
+            </div>
+        </div>
+
+        <!-- EDITOR -->
+        <div class="editor-header">
+            <h3>Editing Rules</h3>
+        </div>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="setMode('slot')" id="btn-mode-slot">Specific Slot</button>
+            <button class="mode-btn" onclick="setMode('fill')" id="btn-mode-fill">Fill</button>
+            <button class="mode-btn" onclick="setMode('outline')" id="btn-mode-outline">Outline</button>
+            <button class="mode-btn" onclick="setMode('row')" id="btn-mode-row">Row</button>
+            <button class="mode-btn" onclick="setMode('col')" id="btn-mode-col">Column</button>
+        </div>
+
+        <!-- Target Helpers -->
+        <div id="target-slot-info" class="note target-box" style="display:block;">Click on the grid above to select a specific slot to edit. Currently editing Slot: <strong id="lbl-slot">0</strong></div>
+        <div id="target-fill-info" class="note target-box">This item will be applied to the entire GUI. (Overrides empty slots)</div>
+        <div id="target-outline-info" class="note target-box">This item will be placed around the borders of the GUI.</div>
+        <div id="target-row-info" class="note target-box">
+            Select a row (1-6) to edit: 
+            <input type="number" id="target-row-val" value="1" min="1" max="6" style="width:60px; display:inline-block; padding: 4px;" oninput="loadCurrentAction()">
+        </div>
+        <div id="target-col-info" class="note target-box">
+            Select a column (1-9) to edit: 
+            <input type="number" id="target-col-val" value="1" min="1" max="9" style="width:60px; display:inline-block; padding: 4px;" oninput="loadCurrentAction()">
+        </div>
+
+        <!-- IMPORT SINGLE ITEM SECTION -->
+        <div class="import-section">
+            <label for="importCmd">Import Single Item into Current Rule</label>
+            <div class="note">Paste a generated item command here to load it!</div>
+            <div class="row">
+                <input type="text" id="importCmd" placeholder='e.g. /give @p diamond_sword 1 0 {display:{...}}'>
+                <button class="btn" onclick="importCommand()" style="flex: 0 0 auto;">Import Item</button>
+            </div>
+        </div>
+
+        <!-- Item Inputs -->
+        <div class="row">
+            <div>
+                <label for="item">Bukkit Material / Base ID</label>
+                <div class="note">e.g. STAINED_GLASS_PANE or diamond_sword</div>
+                <input type="text" id="item" list="mc-items" placeholder="Material Enum...">
+                <datalist id="mc-items">
+                    <option value="STONE"></option>
+                    <option value="GRASS"></option>
+                    <option value="DIRT"></option>
+                    <option value="COBBLESTONE"></option>
+                    <option value="WOOD"></option>
+                    <option value="BEDROCK"></option>
+                    <option value="GLASS"></option>
+                    <option value="STAINED_GLASS_PANE"></option>
+                    <option value="DIAMOND_SWORD"></option>
+                    <option value="IRON_SWORD"></option>
+                    <option value="BOW"></option>
+                    <option value="APPLE"></option>
+                    <option value="DIAMOND"></option>
+                    <option value="EMERALD"></option>
+                    <option value="COMPASS"></option>
+                    <option value="PAPER"></option>
+                    <option value="BARRIER"></option>
+                </datalist>
+            </div>
+            <div class="small-col">
+                <label for="itemData">Data</label>
+                <div class="note">e.g. 15</div>
+                <input type="number" id="itemData" value="0" min="0" max="32767">
+            </div>
+            <div class="small-col">
+                <label for="itemAmount">Amount</label>
+                <div class="note">Count</div>
+                <input type="number" id="itemAmount" value="1" min="1" max="64">
+            </div>
+        </div>
+
+        <label for="itemName">Custom Name</label>
+        <div class="note">Leave blank for default. Use & for colors. Type " " for a blank name!</div>
+        <input type="text" id="itemName" placeholder="&bEpic Item">
+
+        <label for="itemLore">Lore (One line per row)</label>
+        <div class="note">Use & for color codes. Leave a line blank for an empty space.</div>
+        <textarea id="itemLore" placeholder="&7Line 1..."></textarea>
+
+        <div class="row" style="margin-top: 15px;">
+            <div>
+                <label for="enchant">Enchantment (Used for /give outputs)</label>
+                <select id="enchant">
+                    <option value="" selected>None</option>
+                    <optgroup label="Armor">
+                        <option value="0">Protection (0)</option>
+                        <option value="1">Fire Protection (1)</option>
+                        <option value="2">Feather Falling (2)</option>
+                        <option value="3">Blast Protection (3)</option>
+                        <option value="4">Projectile Protection (4)</option>
+                        <option value="5">Respiration (5)</option>
+                        <option value="6">Aqua Affinity (6)</option>
+                        <option value="7">Thorns (7)</option>
+                        <option value="8">Depth Strider (8)</option>
+                    </optgroup>
+                    <optgroup label="Weapons">
+                        <option value="16">Sharpness (16)</option>
+                        <option value="17">Smite (17)</option>
+                        <option value="18">Bane of Arthropods (18)</option>
+                        <option value="19">Knockback (19)</option>
+                        <option value="20">Fire Aspect (20)</option>
+                        <option value="21">Looting (21)</option>
+                    </optgroup>
+                    <optgroup label="Tools">
+                        <option value="32">Efficiency (32)</option>
+                        <option value="33">Silk Touch (33)</option>
+                        <option value="34">Unbreaking (34)</option>
+                        <option value="35">Fortune (35)</option>
+                    </optgroup>
+                    <optgroup label="Bows">
+                        <option value="48">Power (48)</option>
+                        <option value="49">Punch (49)</option>
+                        <option value="50">Flame (50)</option>
+                        <option value="51">Infinity (51)</option>
+                    </optgroup>
+                    <optgroup label="Fishing">
+                        <option value="61">Luck of the Sea (61)</option>
+                        <option value="62">Lure (62)</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <label for="level">Enchant Level</label>
+                <input type="number" id="level" value="5" min="1" max="32767">
+            </div>
+        </div>
+
+        <div class="checkbox-group">
+            <div class="checkbox-container">
+                <input type="checkbox" id="autoCenterName">
+                <label for="autoCenterName">Auto-Center Name (Inserts physical spaces)</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="autoCenterLore" checked>
+                <label for="autoCenterLore">Auto-Center Lore (Inserts physical spaces)</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="hideFlags" checked>
+                <label for="hideFlags">Hide Enchantment Tooltip (HideFlags: 1)</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="useConsole">
+                <label for="useConsole">Running in Console (Removes / from give commands)</label>
+            </div>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <button class="btn btn-red" onclick="clearCurrentAction()">Clear Current Action</button>
+        </div>
+
+        <!-- OUTPUTS -->
+        <h3 style="margin-top: 30px;">Generated Java Code:</h3>
+        <div class="note">Copy and paste this directly into your Bukkit/Spigot plugin!</div>
+        <div class="output-container">
+            <div class="output" id="javaOutput">Page page = new Page...</div>
+            <button class="btn copy-btn" onclick="copyOutput('javaOutput', this)">Copy Java Code</button>
+        </div>
+
+        <h3 style="margin-top: 30px;">Generated Item Command:</h3>
+        <div class="note">Command for the single item rule you are currently editing.</div>
+        <div class="output-container">
+            <div class="output" id="singleCommandOutput">/give @p ...</div>
+            <button class="btn copy-btn" onclick="copyOutput('singleCommandOutput', this)">Copy Item</button>
+        </div>
+
+        <h3 style="margin-top: 30px;">Generated Chest Command:</h3>
+        <div class="note">In-game chest compiled from ALL your rules perfectly layered!</div>
+        <div class="output-container">
+            <div class="output" id="chestCommandOutput">/give @p ...</div>
+            <button class="btn copy-btn" onclick="copyOutput('chestCommandOutput', this)">Copy Chest</button>
+        </div>
+
+    </div>
+
+    <!-- LIVE PREVIEW SECTION -->
+    <div class="preview-container">
+        <h2 class="preview-title">Live Preview</h2>
+        <div class="mc-tooltip" id="mcTooltip">
+            <div style="color: #555555; font-style: italic;">Empty Slot</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- APP STATE ---
+    let config = {
+        rows: 6
+    };
+
+    let actions = {
+        fill: null,
+        outline: null,
+        rows: {}, // Stores 1-6
+        cols: {}, // Stores 1-9
+        slots: {} // Stores 0-53
+    };
+
+    let currentMode = 'slot'; 
+    let selectedSlot = 0; 
+
+    const editorFields = ['item', 'itemData', 'itemAmount', 'itemName', 'itemLore', 'autoCenterName', 'autoCenterLore', 'enchant', 'level', 'hideFlags'];
+    const globalFields = ['playerName', 'guiName', 'varName', 'useConsole'];
+
+    // FIX: Renamed to match the variable requested everywhere, ensures all fields are cleared properly.
+    function getEmptyItem() {
+        return {
+            item: '',
+            data: '0',
+            amount: '1',
+            itemName: '',
+            itemLore: '',
+            autoCenterName: false,
+            autoCenterLore: true,
+            enchant: '',
+            level: '1',
+            hideFlags: true
+        };
+    }
+
+    // --- MATH & UTILS ---
+    const colorMap = {
+        '0': '#000000', '1': '#0000AA', '2': '#00AA00', '3': '#00AAAA',
+        '4': '#AA0000', '5': '#AA00AA', '6': '#FFAA00', '7': '#AAAAAA',
+        '8': '#555555', '9': '#5555FF', 'a': '#55FF55', 'b': '#55FFFF',
+        'c': '#FF5555', 'd': '#FF55FF', 'e': '#FFFF55', 'f': '#FFFFFF',
+        'l': 'bold', 'o': 'italic'
+    };
+
+    function stripColors(text) {
+        return text.replace(/&[0-9a-fk-or]/gi, '');
+    }
+
+    function unpadText(text) {
+        let cleaned = text.replace(/^(§[0-9a-fk-or])\s+/i, '$1').replace(/^\s+/g, '');
+        return cleaned.replace(/§/g, '&');
+    }
+
+    function getMCPixelWidth(text) {
+        const cleanText = stripColors(text);
+        let width = 0;
+        for (let i = 0; i < cleanText.length; i++) {
+            const char = cleanText[i];
+            if (/[ilI!\.,';:\|]/.test(char)) width += 2;
+            else if (/[tfk\s\(\)\[\]<>]/.test(char)) width += 4;
+            else if (/[@~]/.test(char)) width += 7;
+            else width += 6;
+        }
+        return width;
+    }
+
+    function parseToHTML(text, defaultColor = '#AAAAAA') {
+        let html = '';
+        let currentColor = defaultColor;
+        let isBold = false;
+        let isItalic = false;
+
+        const parts = text.split(/(?=&[0-9a-fk-or])/i);
+        
+        parts.forEach(part => {
+            if (part.startsWith('&') && part.length >= 2) {
+                const code = part.charAt(1).toLowerCase();
+                const content = part.substring(2);
+                
+                if (colorMap[code]) {
+                    if (code === 'l') isBold = true;
+                    else if (code === 'o') isItalic = true;
+                    else if (code === 'r') {
+                        currentColor = defaultColor;
+                        isBold = false;
+                        isItalic = false;
+                    } else {
+                        currentColor = colorMap[code];
+                        isBold = false; 
+                        isItalic = false;
+                    }
+                }
+                
+                let style = `color: ${currentColor};`;
+                if (isBold) style += ' font-weight: bold;';
+                if (isItalic) style += ' font-style: italic;';
+                html += `<span style="${style}">${content.replace(/ /g, '&nbsp;')}</span>`;
+            } else {
+                let style = `color: ${currentColor};`;
+                if (isBold) style += ' font-weight: bold;';
+                if (isItalic) style += ' font-style: italic;';
+                html += `<span style="${style}">${part.replace(/ /g, '&nbsp;')}</span>`;
+            }
+        });
+        return html;
+    }
+
+    function processCentering(rawItemName, rawLoreLines, autoCenterName, autoCenterLore) {
+        let processedName = rawItemName;
+        let processedLoreLines = [...rawLoreLines];
+
+        if (autoCenterName || autoCenterLore) {
+            let maxPixelWidth = 0;
+            let longestIndex = -2; 
+            
+            if (rawItemName) {
+                maxPixelWidth = getMCPixelWidth(rawItemName);
+                longestIndex = -1;
+            }
+            
+            rawLoreLines.forEach((line, index) => {
+                const w = getMCPixelWidth(line);
+                if (w > maxPixelWidth) {
+                    maxPixelWidth = w;
+                    longestIndex = index;
+                }
+            });
+
+            if (maxPixelWidth % 2 !== 0) {
+                if (longestIndex === -1 && rawItemName) rawItemName += ' ';
+                else if (longestIndex >= 0) rawLoreLines[longestIndex] += ' ';
+                maxPixelWidth += 4; 
+            }
+
+            const padLine = (line) => {
+                const lineWidth = getMCPixelWidth(line);
+                const spacesNeeded = Math.round((maxPixelWidth - lineWidth) / 8); 
+                const padding = ' '.repeat(Math.max(0, spacesNeeded));
+                if (line.match(/^&[0-9a-fk-or]/i)) return line.substring(0, 2) + padding + line.substring(2);
+                return padding + line;
+            };
+
+            if (autoCenterName && rawItemName) processedName = padLine(rawItemName);
+            if (autoCenterLore && rawLoreLines.length > 0) processedLoreLines = rawLoreLines.map(line => padLine(line));
+        }
+        return { processedName, processedLoreLines };
+    }
+
+    // --- CORE LOGIC ---
+
+    function changeRows() {
+        config.rows = parseInt(document.getElementById('guiRows').value);
+        document.getElementById('target-row-val').max = config.rows;
+        if (parseInt(document.getElementById('target-row-val').value) > config.rows) {
+            document.getElementById('target-row-val').value = config.rows;
+        }
+        
+        const maxSlots = config.rows * 9;
+        for (let s in actions.slots) {
+            if (s >= maxSlots) delete actions.slots[s];
+        }
+        
+        if (selectedSlot >= maxSlots) selectedSlot = 0;
+        
+        renderGrid();
+        loadCurrentAction();
+        generateAllOutputs();
+    }
+
+    function setMode(mode) {
+        saveCurrentAction();
+        currentMode = mode;
+        
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-mode-${mode}`).classList.add('active');
+
+        document.querySelectorAll('.target-box').forEach(box => box.style.display = 'none');
+        document.getElementById(`target-${mode}-info`).style.display = 'block';
+
+        loadCurrentAction();
+        renderGrid();
+    }
+
+    // Calculates exactly what data applies to a specific slot (Draw Order: Fill < Outline < Row < Col < Slot)
+    function resolveSlotData(index) {
+        let finalData = null;
+        const row = Math.floor(index / 9) + 1;
+        const col = (index % 9) + 1;
+
+        if (actions.fill) finalData = actions.fill;
+        if (actions.outline) {
+            if (row === 1 || row === config.rows || col === 1 || col === 9) finalData = actions.outline;
+        }
+        if (actions.rows[row]) finalData = actions.rows[row];
+        if (actions.cols[col]) finalData = actions.cols[col];
+        if (actions.slots[index]) finalData = actions.slots[index];
+
+        return finalData;
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('chestGrid');
+        grid.innerHTML = '';
+        const maxSlots = config.rows * 9;
+        
+        for (let i = 0; i < maxSlots; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'chest-slot';
+            
+            const r = Math.floor(i / 9) + 1;
+            const c = (i % 9) + 1;
+            const tRow = parseInt(document.getElementById('target-row-val').value);
+            const tCol = parseInt(document.getElementById('target-col-val').value);
+
+            // Highlight selected logic
+            if (currentMode === 'slot' && i === selectedSlot) slot.classList.add('selected');
+            if (currentMode === 'fill') slot.classList.add('selected');
+            if (currentMode === 'outline' && (r === 1 || r === config.rows || c === 1 || c === 9)) slot.classList.add('selected');
+            if (currentMode === 'row' && r === tRow) slot.classList.add('selected');
+            if (currentMode === 'col' && c === tCol) slot.classList.add('selected');
+            
+            // Render the final computed item
+            const data = resolveSlotData(i);
+            
+            if (data && data.item.trim() !== '') {
+                let fallback = document.createElement('span');
+                fallback.className = 'item-fallback';
+                fallback.innerText = data.item.replace('minecraft:', '').substring(0, 2);
+                slot.appendChild(fallback);
+
+                let img = document.createElement('img');
+                img.className = 'item-icon';
+                img.src = `https://api.mineatar.io/item/${data.item.toLowerCase()}`;
+                img.onerror = function() { this.style.display = 'none'; };
+                slot.appendChild(img);
+            }
+            
+            slot.onclick = () => {
+                if (currentMode === 'slot') {
+                    selectedSlot = i;
+                    document.getElementById('lbl-slot').innerText = i;
+                    loadCurrentAction();
+                    renderGrid();
+                }
+            };
+            grid.appendChild(slot);
+        }
+    }
+
+    // FIX: Properly pulls ALL inputs including enchants when swapping modes
+    function loadCurrentAction() {
+        let data = null;
+        
+        if (currentMode === 'slot') {
+            data = actions.slots[selectedSlot];
+        } else if (currentMode === 'fill') {
+            data = actions.fill;
+        } else if (currentMode === 'outline') {
+            data = actions.outline;
+        } else if (currentMode === 'row') {
+            const r = parseInt(document.getElementById('target-row-val').value);
+            data = actions.rows[r];
+        } else if (currentMode === 'col') {
+            const c = parseInt(document.getElementById('target-col-val').value);
+            data = actions.cols[c];
+        }
+
+        if (!data) data = getEmptyItem();
+
+        document.getElementById('item').value = data.item;
+        document.getElementById('itemData').value = data.data;
+        document.getElementById('itemAmount').value = data.amount;
+        document.getElementById('itemName').value = data.itemName;
+        document.getElementById('itemLore').value = data.itemLore;
+        document.getElementById('autoCenterName').checked = data.autoCenterName;
+        document.getElementById('autoCenterLore').checked = data.autoCenterLore;
+        document.getElementById('enchant').value = data.enchant;
+        document.getElementById('level').value = data.level;
+        document.getElementById('hideFlags').checked = data.hideFlags;
+        
+        updatePreview(data);
+        renderGrid(); 
+    }
+
+    function saveCurrentAction() {
+        const data = {
+            item: document.getElementById('item').value.trim(),
+            data: document.getElementById('itemData').value || '0',
+            amount: document.getElementById('itemAmount').value || '1',
+            itemName: document.getElementById('itemName').value,
+            itemLore: document.getElementById('itemLore').value,
+            autoCenterName: document.getElementById('autoCenterName').checked,
+            autoCenterLore: document.getElementById('autoCenterLore').checked,
+            enchant: document.getElementById('enchant').value,
+            level: document.getElementById('level').value || '1',
+            hideFlags: document.getElementById('hideFlags').checked
+        };
+
+        const isEmpty = (data.item === '');
+
+        if (currentMode === 'slot') {
+            if (isEmpty) delete actions.slots[selectedSlot];
+            else actions.slots[selectedSlot] = data;
+        } else if (currentMode === 'fill') {
+            actions.fill = isEmpty ? null : data;
+        } else if (currentMode === 'outline') {
+            actions.outline = isEmpty ? null : data;
+        } else if (currentMode === 'row') {
+            const r = parseInt(document.getElementById('target-row-val').value);
+            if (isEmpty) delete actions.rows[r];
+            else actions.rows[r] = data;
+        } else if (currentMode === 'col') {
+            const c = parseInt(document.getElementById('target-col-val').value);
+            if (isEmpty) delete actions.cols[c];
+            else actions.cols[c] = data;
+        }
+    }
+
+    function clearCurrentAction() {
+        document.getElementById('item').value = '';
+        saveCurrentAction();
+        loadCurrentAction();
+        generateAllOutputs();
+    }
+
+    function handleInput() {
+        saveCurrentAction();
+        updatePreview(resolveCurrentData());
+        renderGrid();
+        generateAllOutputs();
+    }
+
+    function resolveCurrentData() {
+        return {
+            item: document.getElementById('item').value.trim(),
+            data: document.getElementById('itemData').value || '0',
+            amount: document.getElementById('itemAmount').value || '1',
+            itemName: document.getElementById('itemName').value,
+            itemLore: document.getElementById('itemLore').value,
+            autoCenterName: document.getElementById('autoCenterName').checked,
+            autoCenterLore: document.getElementById('autoCenterLore').checked,
+            enchant: document.getElementById('enchant').value,
+            level: document.getElementById('level').value || '1',
+            hideFlags: document.getElementById('hideFlags').checked
+        };
+    }
+
+    function updatePreview(data) {
+        if (!data || data.item === '') {
+            document.getElementById('mcTooltip').innerHTML = '<div style="color: #555555; font-style: italic;">No Item Applied</div>';
+            return;
+        }
+
+        let rawLoreLines = data.itemLore.split('\n');
+        while (rawLoreLines.length > 0 && rawLoreLines[rawLoreLines.length - 1].trim() === '') rawLoreLines.pop();
+        rawLoreLines = rawLoreLines.map(line => line.trim() === '' ? '&f ' : line);
+
+        const { processedName, processedLoreLines } = processCentering(data.itemName, rawLoreLines, data.autoCenterName, data.autoCenterLore);
+
+        let tooltipHTML = '';
+        if (data.itemName) {
+            tooltipHTML += `<div>${parseToHTML(processedName, '#FFFFFF')}</div>`; 
+        } else {
+            tooltipHTML += `<div>${parseToHTML('&f' + data.item.toUpperCase(), '#FFFFFF')}</div>`;
+        }
+        
+        processedLoreLines.forEach(line => {
+            tooltipHTML += `<div>${parseToHTML(line, '#AA00AA')}</div>`;
+        });
+
+        if (data.enchant !== "") {
+            const enchantSelect = document.getElementById('enchant');
+            const opt = Array.from(enchantSelect.options).find(o => o.value === data.enchant);
+            const enchantName = opt ? opt.text.split(' (')[0] : 'Enchantment';
+            if (!data.hideFlags) {
+                tooltipHTML += `<div>${parseToHTML(`&7${enchantName} ${data.level}`)}</div>`;
+            }
+        }
+        
+        document.getElementById('mcTooltip').innerHTML = tooltipHTML;
+    }
+
+    // --- OUTPUT GENERATORS ---
+
+    function buildItemStackString(act) {
+        let mat = act.item.toUpperCase().replace('MINECRAFT:', '');
+        if (act.data > 0) return `new ItemStack(Material.${mat}, ${act.amount}, (short) ${act.data})`;
+        if (act.amount > 1) return `new ItemStack(Material.${mat}, ${act.amount})`;
+        return `new ItemStack(Material.${mat})`;
+    }
+
+    function buildArgsString(act) {
+        let args = buildItemStackString(act);
+        let name = act.itemName;
+        
+        let rawLoreLines = act.itemLore.split('\n');
+        while (rawLoreLines.length > 0 && rawLoreLines[rawLoreLines.length - 1].trim() === '') rawLoreLines.pop();
+        rawLoreLines = rawLoreLines.map(line => line.trim() === '' ? '&f ' : line);
+        
+        const { processedName, processedLoreLines } = processCentering(name, rawLoreLines, act.autoCenterName, act.autoCenterLore);
+
+        let finalName = processedName ? processedName : (processedLoreLines.length > 0 ? " " : null);
+
+        if (finalName !== null) {
+             args += `, "${finalName.replace(/"/g, '\\"')}"`;
+        }
+        if (processedLoreLines.length > 0) {
+             let loreArgs = processedLoreLines.map(l => `"${l.replace(/"/g, '\\"')}"`).join(', ');
+             args += `, ${loreArgs}`;
+        }
+        return args;
+    }
+
+    function generateJavaCode() {
+        const varName = document.getElementById('varName').value || 'page';
+        const guiName = document.getElementById('guiName').value;
+        
+        let code = `Page ${varName} = new Page(plugin, ${config.rows}, "${guiName.replace(/"/g, '\\"')}");\n\n`;
+
+        if (actions.fill) code += `${varName}.fill(${buildArgsString(actions.fill)});\n`;
+        if (actions.outline) code += `${varName}.outline(${buildArgsString(actions.outline)});\n`;
+        for (let r = 1; r <= 6; r++) if (actions.rows[r]) code += `${varName}.row(${r}, ${buildArgsString(actions.rows[r])});\n`;
+        for (let c = 1; c <= 9; c++) if (actions.cols[c]) code += `${varName}.column(${c}, ${buildArgsString(actions.cols[c])});\n`;
+        
+        let slotKeys = Object.keys(actions.slots).map(Number).sort((a,b)=>a-b);
+        if (slotKeys.length > 0) {
+            code += `\n`;
+            for (let s of slotKeys) {
+                code += `${varName}.setSlot(${s}, ${buildArgsString(actions.slots[s])});\n`;
+            }
+        }
+        
+        document.getElementById('javaOutput').textContent = code;
+    }
+
+    function buildNbtFromData(data) {
+        if (!data || data.item.trim() === '') return null;
+
+        const itemID = data.item.includes(':') ? data.item.toLowerCase() : 'minecraft:' + data.item.toLowerCase();
+        
+        let rawLoreLines = data.itemLore.split('\n');
+        while (rawLoreLines.length > 0 && rawLoreLines[rawLoreLines.length - 1].trim() === '') rawLoreLines.pop();
+        rawLoreLines = rawLoreLines.map(line => line.trim() === '' ? '&f ' : line);
+        
+        const { processedName, processedLoreLines } = processCentering(data.itemName, rawLoreLines, data.autoCenterName, data.autoCenterLore);
+        
+        let displayParts = [];
+        if (processedName) displayParts.push(`Name:"${processedName.replace(/&/g, '§')}"`);
+        if (processedLoreLines.length > 0) {
+            const formattedLore = processedLoreLines.map(line => `"${line.replace(/&/g, '§')}"`).join(',');
+            displayParts.push(`Lore:[${formattedLore}]`);
+        }
+        
+        let nbtParts = [];
+        if (displayParts.length > 0) nbtParts.push(`display:{${displayParts.join(',')}}`);
+        if (data.enchant !== "") nbtParts.push(`ench:[{id:${data.enchant},lvl:${data.level}}]`);
+        if (data.hideFlags) nbtParts.push(`HideFlags:1`);
+
+        const tagString = nbtParts.length > 0 ? `{${nbtParts.join(',')}}` : '';
+        return { itemID, amount: data.amount, dataVal: data.data, tagString, innerTags: nbtParts.join(',') };
+    }
+
+    function generateGiveCommands() {
+        const player = document.getElementById('playerName').value || '@p';
+        const chestNameRaw = document.getElementById('guiName').value;
+        const useConsole = document.getElementById('useConsole').checked;
+        const commandPrefix = useConsole ? "give" : "/give";
+
+        // 1. Single Command Output
+        const currentData = resolveCurrentData();
+        const singleNbt = buildNbtFromData(currentData);
+        if (singleNbt) {
+            document.getElementById('singleCommandOutput').textContent = `${commandPrefix} ${player} ${singleNbt.itemID} ${singleNbt.amount} ${singleNbt.dataVal} ${singleNbt.tagString}`.trim();
+        } else {
+            document.getElementById('singleCommandOutput').textContent = "Current rule is empty.";
+        }
+
+        // 2. Chest Command Output
+        let itemsList = [];
+        const maxSlots = config.rows * 9;
+        
+        for (let i = 0; i < maxSlots; i++) {
+            const slotData = resolveSlotData(i);
+            const nbt = buildNbtFromData(slotData);
+            if (nbt) {
+                const tagInsert = nbt.innerTags ? `,tag:{${nbt.innerTags}}` : '';
+                itemsList.push(`{Slot:${i}b,id:"${nbt.itemID}",Count:${nbt.amount}b,Damage:${nbt.dataVal}s${tagInsert}}`);
+            }
+        }
+
+        let chestNbtParts = [];
+        if (chestNameRaw.trim() !== '') {
+            chestNbtParts.push(`display:{Name:"${chestNameRaw.replace(/&/g, '§')}"}`);
+        }
+        if (itemsList.length > 0) {
+            chestNbtParts.push(`BlockEntityTag:{Items:[${itemsList.join(',')}]}`);
+        }
+        
+        let chestNbtString = chestNbtParts.length > 0 ? `{${chestNbtParts.join(',')}}` : '';
+        document.getElementById('chestCommandOutput').textContent = `${commandPrefix} ${player} minecraft:chest 1 0 ${chestNbtString}`.trim();
+    }
+
+    function generateAllOutputs() {
+        generateJavaCode();
+        generateGiveCommands();
+    }
+
+    // --- IMPORTS ---
+    function importFullChest() {
+        const cmd = document.getElementById('importFullCmd').value.trim();
+        if (!cmd) return;
+
+        actions.fill = null;
+        actions.outline = null;
+        actions.rows = {};
+        actions.cols = {};
+        actions.slots = {};
+
+        const itemsStart = cmd.indexOf('Items:[');
+        if (itemsStart !== -1) {
+            let depth = 1;
+            let index = itemsStart + 7;
+            
+            while (index < cmd.length && depth > 0) {
+                if (cmd[index] === '[') depth++;
+                else if (cmd[index] === ']') depth--;
+                index++;
+            }
+            
+            let itemsStr = cmd.substring(itemsStart + 7, index - 1);
+            let itemBlocks = itemsStr.split(/{Slot:/i);
+            
+            let maxSlotFound = 0;
+
+            for (let block of itemBlocks) {
+                if (!block.trim()) continue;
+                block = "{Slot:" + block; 
+
+                let slotMatch = block.match(/Slot:(\d+)[bs]?/i);
+                let slot = slotMatch ? parseInt(slotMatch[1]) : -1;
+
+                if (slot >= 0 && slot < 54) {
+                    if (slot > maxSlotFound) maxSlotFound = slot;
+
+                    actions.slots[slot] = getEmptyItem();
+
+                    let idMatch = block.match(/id:"(?:minecraft:)?([^"]+)"/i);
+                    actions.slots[slot].item = idMatch ? idMatch[1].toUpperCase() : '';
+
+                    let countMatch = block.match(/Count:(\d+)[bs]?/i);
+                    actions.slots[slot].amount = countMatch ? countMatch[1] : '1';
+
+                    let damageMatch = block.match(/Damage:(\d+)[bs]?/i);
+                    actions.slots[slot].data = damageMatch ? damageMatch[1] : '0';
+
+                    let tagStart = block.indexOf('tag:{');
+                    let tagStr = '';
+                    
+                    if (tagStart !== -1) {
+                        let tDepth = 0;
+                        let tEnd = -1;
+                        for (let j = tagStart + 4; j < block.length; j++) {
+                            if (block[j] === '{') tDepth++;
+                            else if (block[j] === '}') {
+                                tDepth--;
+                                if (tDepth === 0) {
+                                    tEnd = j + 1;
+                                    break;
+                                }
+                            }
+                        }
+                        if (tEnd !== -1) tagStr = block.substring(tagStart + 4, tEnd);
+                    }
+
+                    if (tagStr) {
+                        const nameMatch = tagStr.match(/Name:"((?:[^"\\]|\\.)*)"/);
+                        if (nameMatch) {
+                            let text = nameMatch[1].replace(/\\"/g, '"');
+                            actions.slots[slot].itemName = unpadText(text);
+                        }
+
+                        const loreMatch = tagStr.match(/Lore:\[((?:\s*"(?:[^"\\]|\\.)*"\s*,?\s*)*)\]/);
+                        if (loreMatch) {
+                            const rawLoreString = loreMatch[1];
+                            const loreArray = rawLoreString.match(/"(?:[^"\\]|\\.)*"/g) || [];
+                            const cleanLore = loreArray.map(line => {
+                                let text = line.substring(1, line.length - 1).replace(/\\"/g, '"');
+                                let unpadded = unpadText(text);
+                                if (unpadded.match(/^&[0-9a-fk-or]$/i) || unpadded === '') return ''; 
+                                return unpadded;
+                            });
+                            actions.slots[slot].itemLore = cleanLore.join('\n');
+                        }
+
+                        const enchMatch = tagStr.match(/ench:\[.*?id:(\d+),lvl:(\d+).*?\]/);
+                        if (enchMatch) {
+                            actions.slots[slot].enchant = enchMatch[1];
+                            actions.slots[slot].level = enchMatch[2];
+                        }
+
+                        if (tagStr.includes('HideFlags:1')) {
+                            actions.slots[slot].hideFlags = true;
+                        }
+                    }
+                    actions.slots[slot].autoCenterName = false;
+                    actions.slots[slot].autoCenterLore = false;
+                }
+            }
+
+            // Adjust rows automatically
+            let reqRows = Math.ceil((maxSlotFound + 1) / 9);
+            if (reqRows < 1) reqRows = 1;
+            if (reqRows > 6) reqRows = 6;
+            document.getElementById('guiRows').value = reqRows;
+            config.rows = reqRows;
+        }
+
+        const btn = document.querySelector('#importFullCmd').nextElementSibling;
+        btn.innerText = 'GUI Loaded!';
+        setTimeout(() => btn.innerText = 'Import Chest', 2000);
+
+        loadCurrentAction();
+        renderGrid();
+        generateAllOutputs();
+    }
+
+    function importCommand() {
+        const cmd = document.getElementById('importCmd').value.trim();
+        if (!cmd) return;
+
+        let importedData = getEmptyItem();
+        
+        const baseMatch = cmd.match(/^(?:\/)?give\s+([^ \n]+)\s+([^ \n{]+)(?:\s+(\d+))?(?:\s+(\d+))?/i);
+        if (baseMatch) {
+            importedData.item = baseMatch[2].replace(/^minecraft:/, '').toUpperCase();
+            if (baseMatch[3]) importedData.amount = baseMatch[3];
+            if (baseMatch[4]) importedData.data = baseMatch[4]; 
+        }
+
+        const nameMatch = cmd.match(/Name:"((?:[^"\\]|\\.)*)"/);
+        if (nameMatch) {
+            let text = nameMatch[1].replace(/\\"/g, '"');
+            importedData.itemName = unpadText(text);
+        }
+
+        const loreMatch = cmd.match(/Lore:\[((?:\s*"(?:[^"\\]|\\.)*"\s*,?\s*)*)\]/);
+        if (loreMatch) {
+            const rawLoreString = loreMatch[1];
+            const loreArray = rawLoreString.match(/"(?:[^"\\]|\\.)*"/g) || [];
+            
+            const cleanLore = loreArray.map(line => {
+                let text = line.substring(1, line.length - 1).replace(/\\"/g, '"');
+                let unpadded = unpadText(text);
+                if (unpadded.match(/^&[0-9a-fk-or]$/i) || unpadded === '') return ''; 
+                return unpadded;
+            });
+            importedData.itemLore = cleanLore.join('\n');
+        }
+
+        const enchMatch = cmd.match(/ench:\[.*?id:(\d+),lvl:(\d+).*?\]/);
+        if (enchMatch) {
+            importedData.enchant = enchMatch[1];
+            importedData.level = enchMatch[2];
+        }
+
+        if (cmd.includes('HideFlags:1')) {
+            importedData.hideFlags = true;
+        }
+
+        importedData.autoCenterName = false;
+        importedData.autoCenterLore = false; 
+
+        // Apply to current mode
+        if (currentMode === 'slot') actions.slots[selectedSlot] = importedData;
+        else if (currentMode === 'fill') actions.fill = importedData;
+        else if (currentMode === 'outline') actions.outline = importedData;
+        else if (currentMode === 'row') actions.rows[parseInt(document.getElementById('target-row-val').value)] = importedData;
+        else if (currentMode === 'col') actions.cols[parseInt(document.getElementById('target-col-val').value)] = importedData;
+
+        const btn = document.querySelector('#importCmd').nextElementSibling;
+        btn.innerText = 'Imported!';
+        btn.style.background = '#27ae60';
+        setTimeout(() => {
+            btn.innerText = 'Import Item';
+            btn.style.background = '#0072ff';
+        }, 1500);
+
+        loadCurrentAction();
+        renderGrid();
+        generateAllOutputs();
+    }
+
+    function copyOutput(id, btn) {
+        const text = document.getElementById(id).textContent;
+        if (text === "Current rule is empty.") return;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            const oldText = btn.innerText;
+            btn.innerText = 'Copied!';
+            setTimeout(() => {
+                btn.innerText = oldText;
+            }, 2000);
+        });
+    }
+
+    // Attach listeners
+    editorFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', handleInput);
+    });
+    globalFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', generateAllOutputs);
+    });
+    
+    // Initial Setup
+    renderGrid();
+    setMode('slot');
+    generateAllOutputs();
+</script>
+
+</body>
+</html>
