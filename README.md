@@ -1,7 +1,7 @@
 # TellyGUIs (PagesAPI)
 [![](https://jitpack.io/v/tellymc/TellyGUIs.svg)](https://jitpack.io/#tellymc/TellyGUIs)
 
-## Website to help create the code for you!
+### Website to help create the code for you!
 https://tellymc.github.io/TellyGUIs/
 
 ## How to Install
